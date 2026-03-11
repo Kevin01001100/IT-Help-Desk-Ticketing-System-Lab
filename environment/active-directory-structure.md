@@ -4,7 +4,7 @@
 
 This document describes the Active Directory structure used in the IT Help Desk Ticketing System Lab.
 
-The directory structure is designed to simulate a simplified enterprise environment where users, computers, and access permissions are managed centrally through Active Directory.
+The directory structure simulates a simplified enterprise environment where users, computers, and access permissions are managed centrally through Active Directory.
 
 The structure supports common IT support tasks including:
 
@@ -30,35 +30,68 @@ The following OU structure was implemented:
 ```
 lab.local
 │
-├── Users
-│   ├── Employees
-│   └── IT
-│
-├── Computers
-│
-└── Groups
-```
-
-### Users OU
-
-The **Users** OU contains all domain user accounts.
-
-Sub-OUs are used to separate users by role or department.
-
-```
-Users
-│
 ├── Employees
-└── IT
+├── IT
+├── Groups
+└── Workstations
 ```
 
-This structure allows administrative policies to be applied selectively.
+### Employees OU
 
-For example:
+The **Employees** OU contains standard domain user accounts representing employees within the organization.
+
+This OU allows administrative policies to be applied to employee workstations and accounts.
+
+Examples include:
 
 - password policies
-- desktop restrictions
-- software policies
+- account lockout policies
+- desktop configuration policies
+
+---
+
+### IT OU
+
+The **IT** OU contains administrative or privileged user accounts used by IT personnel.
+
+Separating IT accounts from regular employee accounts allows different security policies or administrative permissions to be applied if needed.
+
+Example account:
+
+```
+m.brown
+```
+
+---
+
+### Groups OU
+
+The **Groups** OU stores security groups used for role-based access control.
+
+Security groups simplify permission management by allowing administrators to assign permissions to groups instead of individual users.
+
+Example groups created in this lab:
+
+| Group Name | Purpose |
+|-----------|-----------|
+| HR-Shared | Access to HR shared folder |
+| Sales-Shared | Access to Sales shared folder |
+| IT-Admins | Administrative privileges |
+
+---
+
+### Workstations OU
+
+The **Workstations** OU stores domain-joined client machines.
+
+Computers are moved into this OU after joining the domain to allow centralized management and Group Policy application.
+
+Example workstation objects:
+
+| Computer Name | Role |
+|--------------|------|
+| LAB-WIN10-01 | Employee workstation |
+| LAB-WIN10-02 | Employee workstation |
 
 ---
 
@@ -80,21 +113,6 @@ Examples include:
 - account lockouts
 - access permission troubleshooting
 - user onboarding
-
----
-
-## Computer Objects
-
-Domain-joined machines are stored in the **Computers** OU.
-
-Example computer objects:
-
-| Computer Name | Role |
-|--------------|------|
-| LAB-WIN10-01 | Employee workstation |
-| LAB-WIN10-02 | Employee workstation |
-
-These machines authenticate to the domain and receive configuration through Group Policy.
 
 ---
 
@@ -186,7 +204,7 @@ This structure allows service desk tickets involving:
 
 ## Group Policy Integration
 
-Organizational Units also allow Group Policy Objects (GPOs) to be applied to specific users or computers.
+Organizational Units allow Group Policy Objects (GPOs) to be applied to specific users or computers.
 
 Example policies implemented in the lab include:
 
