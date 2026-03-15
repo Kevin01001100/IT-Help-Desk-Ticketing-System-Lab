@@ -13,16 +13,16 @@ The lab supports typical support scenarios including:
 - basic network troubleshooting
 - ticket-based incident resolution
 
-The environment is built using virtual machines hosted in VMware Workstation.
+The environment is built using virtual machines hosted in VMware Workstation with Host-Only networking.
 
 ---
 
 ## Infrastructure Topology
 
-The lab contains three virtual machines connected to the same virtual network.
+The lab contains three virtual machines connected to the same Host-Only virtual network (VMnet1).
 
 ```
-VMware Host
+VMware Host (Host-Only Network - VMnet1)
 │
 ├── LAB-DC01
 │   Operating System: Windows Server 2019
@@ -41,29 +41,40 @@ VMware Host
     - Employee workstation
 ```
 
-The domain controller manages authentication, directory services, and DNS resolution for the domain.
+The domain controller manages authentication, directory services, and DNS resolution for the domain. All machines are isolated within the Host-Only network and have no internet access.
 
 ---
 
 ## Network Configuration
 
-All machines are connected to the same internal virtual network.
+All machines are connected to the same Host-Only virtual network (VMnet1).
 
 Network range:
 
 ```
-192.168.10.0 /24
+192.168.56.0 /24
 ```
 
-Example addressing configuration:
+Addressing configuration:
 
-| System | Hostname | IP Address | Role |
-|------|------|------|------|
-| Domain Controller | LAB-DC01 | 192.168.10.10 | AD DS + DNS |
-| Workstation | LAB-WIN10-01 | DHCP | Employee workstation |
-| Workstation | LAB-WIN10-02 | DHCP | Employee workstation |
+| System | Hostname | IP Address | Subnet Mask | DNS Server |
+|------|------|------|------|------|
+| Domain Controller | LAB-DC01 | 192.168.56.10 | 255.255.255.0 | 192.168.56.10 (self) |
+| Workstation 1 | LAB-WIN10-01 | 192.168.56.20 | 255.255.255.0 | 192.168.56.10 |
+| Workstation 2 | LAB-WIN10-02 | 192.168.56.21 | 255.255.255.0 | 192.168.56.10 |
 
-All client machines use the domain controller as their DNS server.
+All machines use static IP addresses. Client machines point to the domain controller as their DNS server. Because all machines are on the same subnet within a Host-Only network, no default gateway is required for intra-lab communication.
+
+---
+
+## Network Design Notes
+
+The lab uses VMware Host-Only networking (VMnet1), which creates a fully isolated private network between the virtual machines and the host machine. This means:
+
+- VMs can communicate with each other and the host machine only
+- There is no internet access or external routing
+- The domain controller serves as the sole DNS server for the `LAB.local` domain
+- Static IP addressing is used throughout to ensure stable domain controller resolution
 
 ---
 
@@ -72,7 +83,7 @@ All client machines use the domain controller as their DNS server.
 The lab domain is configured as:
 
 ```
-lab.local
+LAB.local
 ```
 
 The domain controller provides the following services:
@@ -88,10 +99,10 @@ Workstations authenticate using credentials stored in Active Directory.
 
 ## Active Directory Structure
 
-The domain contains a simplified organizational structure used to simulate enterprise access management.
+The domain contains a simplified organisational structure used to simulate enterprise access management.
 
 ```
-lab.local
+LAB.local
 │
 ├── Users
 │   ├── Employees
@@ -154,23 +165,25 @@ Two Windows 10 client machines simulate employee workstations.
 
 Each workstation is:
 
-- joined to the `lab.local` domain
+- joined to the `LAB.local` domain
+- configured with a static IP address
+- pointed to the domain controller (`192.168.56.10`) for DNS
 - authenticated using Active Directory user accounts
 - connected to shared network resources
 - managed through Group Policy
 
 Example login configuration:
 
-| Machine | User |
-|------|------|
-| LAB-WIN10-01 | j.smith |
-| LAB-WIN10-02 | a.johnson |
+| Machine | IP Address | User |
+|------|------|------|
+| LAB-WIN10-01 | 192.168.56.20 | j.smith |
+| LAB-WIN10-02 | 192.168.56.21 | a.johnson |
 
 ---
 
 ## Group Policy
 
-Basic Group Policy settings are implemented to simulate centralized configuration management.
+Basic Group Policy settings are implemented to simulate centralised configuration management.
 
 Example policies include:
 
