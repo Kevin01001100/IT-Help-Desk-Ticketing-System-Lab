@@ -20,10 +20,10 @@ The workstations allow simulation of common IT support tasks such as:
 
 Two Windows 10 virtual machines were created to simulate employee workstations.
 
-| Computer Name | Role |
-|---------------|------|
-| LAB-WIN10-01 | Employee workstation |
-| LAB-WIN10-02 | Employee workstation |
+| Computer Name | Role | Status |
+|---------------|------|--------|
+| LAB-WIN10-01 | Employee workstation | Configured and verified |
+| LAB-WIN10-02 | Employee workstation | Configuration pending |
 
 Both machines are connected to the same virtual network as the domain controller.
 
@@ -31,17 +31,23 @@ Both machines are connected to the same virtual network as the domain controller
 
 ## Network Configuration
 
-Workstations are configured to use the domain controller as their DNS server.
+Workstations are configured with a static IP address and use the domain controller as their DNS server and default gateway.
 
-Example network configuration:
+### LAB-WIN10-01 (Verified)
 
 | Setting | Value |
 |--------|------|
-| Network Range | 192.168.10.0 /24 |
-| Domain Controller | 192.168.10.10 |
-| DNS Server | 192.168.10.10 |
+| IP Address | 192.168.56.20 |
+| Subnet Mask | 255.255.255.0 |
+| Default Gateway | 192.168.56.10 |
+| DNS Server | 192.168.56.10 |
+| Network Adapter | Ethernet0 |
 
-This allows the workstation to locate and communicate with the domain controller.
+The default gateway is set to the domain controller (`192.168.56.10`), which handles routing within the lab network.
+
+### LAB-WIN10-02 (Pending)
+
+Configuration for LAB-WIN10-02 will follow the same settings as LAB-WIN10-01 once verified.
 
 Verification command:
 
@@ -53,7 +59,7 @@ ipconfig /all
 
 ## Joining the Domain
 
-Each workstation was joined to the domain `lab.local`.
+Each workstation was joined to the domain `LAB.local`.
 
 Steps:
 
@@ -69,7 +75,7 @@ Domain
 5. Enter the domain name:
 
 ```
-lab.local
+LAB.local
 ```
 
 6. Enter domain administrator credentials when prompted
@@ -99,7 +105,7 @@ LAB\username
 or
 
 ```
-username@lab.local
+username@LAB.local
 ```
 
 ---
@@ -138,7 +144,7 @@ Move
 Workstations
 ```
 
-Repeat for all domain workstations.
+Repeat for all domain workstations once each machine has been configured and verified.
 
 This allows Group Policy and administrative management to be applied to workstation objects.
 
@@ -146,14 +152,14 @@ This allows Group Policy and administrative management to be applied to workstat
 
 ## Verification
 
-The following checks were used to confirm proper domain configuration.
+The following checks were used to confirm proper domain configuration on LAB-WIN10-01.
 
 ### Verify Domain Membership
 
 Open **System Information** and confirm:
 
 ```
-Domain: lab.local
+Domain: LAB.local
 ```
 
 ---
@@ -175,7 +181,7 @@ Expected result: successful response.
 Run:
 
 ```
-nslookup lab.local
+nslookup LAB.local
 ```
 
 Expected result: domain resolves to the domain controller.
@@ -198,10 +204,10 @@ This confirms that domain policies are being applied to the workstation.
 
 Example screenshots captured during workstation setup include:
 
-- Windows system properties showing domain membership
-- domain join confirmation
-- workstation objects inside the Workstations OU
-- command prompt output for network verification
+- IPv4 properties showing static IP configuration
+- ipconfig /all output confirming network settings
+- Active Directory Users and Computers showing domain membership
+- Workstation objects inside the Workstations OU
 
 Screenshots are stored in the repository directory:
 
@@ -221,3 +227,5 @@ By joining workstations to the domain and authenticating with Active Directory a
 - network connectivity problems
 - group policy troubleshooting
 - shared resource access
+
+LAB-WIN10-01 has been fully configured and verified. LAB-WIN10-02 will be configured using the same methodology once LAB-WIN10-01 is confirmed stable.
