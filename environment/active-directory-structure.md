@@ -16,7 +16,7 @@ The structure supports common IT support tasks including:
 The domain used in this lab is:
 
 ```
-lab.local
+LAB.local
 ```
 
 ---
@@ -25,22 +25,39 @@ lab.local
 
 Organizational Units (OUs) are used to organize directory objects and allow administrative policies to be applied to specific groups of users or computers.
 
-The following OU structure was implemented:
+The following OU structure is present in the domain:
 
 ```
-lab.local
+LAB.local
 │
+├── Builtin
+├── Computers
+├── Domain Controllers
 ├── Employees
-├── IT
+├── ForeignSecurityPrincipals
 ├── Groups
+├── IT
+├── Managed Service Accounts
+├── Users
 └── Workstations
 ```
+
+The OUs actively used for lab administration and ticket simulation are:
+
+| OU | Purpose |
+|----|---------|
+| Employees | Standard domain user accounts |
+| IT | IT administrator accounts |
+| Groups | Security groups for access control |
+| Workstations | Domain-joined client machines |
+
+---
 
 ### Employees OU
 
 The **Employees** OU contains standard domain user accounts representing employees within the organization.
 
-This OU allows administrative policies to be applied to employee workstations and accounts.
+This OU allows administrative policies to be applied to employee accounts.
 
 Examples include:
 
@@ -88,10 +105,10 @@ Computers are moved into this OU after joining the domain to allow centralized m
 
 Example workstation objects:
 
-| Computer Name | Role |
-|--------------|------|
-| LAB-WIN10-01 | Employee workstation |
-| LAB-WIN10-02 | Employee workstation |
+| Computer Name | Role | Status |
+|--------------|------|--------|
+| LAB-WIN10-01 | Employee workstation | Configured and verified |
+| LAB-WIN10-02 | Employee workstation | Configuration pending |
 
 ---
 
@@ -232,10 +249,10 @@ Objects were verified to exist in the correct Organizational Units and group mem
 
 Example screenshots documenting the directory structure include:
 
-- Active Directory Users and Computers console
+- Active Directory Users and Computers console showing OU structure
 - User account creation
 - Group membership configuration
-- Organizational Unit structure
+- Workstation objects in the Computers and Workstations OUs
 
 Screenshots are located in the repository directory:
 
