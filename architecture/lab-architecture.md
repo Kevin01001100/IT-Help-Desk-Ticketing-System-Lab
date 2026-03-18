@@ -34,11 +34,13 @@ VMware Host (Host-Only Network - VMnet1)
 │   Operating System: Windows 10
 │   Role:
 │   - Employee workstation
+│   Status: Configured and verified
 │
 └── LAB-WIN10-02
     Operating System: Windows 10
     Role:
     - Employee workstation
+    Status: Configuration pending
 ```
 
 The domain controller manages authentication, directory services, and DNS resolution for the domain. All machines are isolated within the Host-Only network and have no internet access.
@@ -57,13 +59,15 @@ Network range:
 
 Addressing configuration:
 
-| System | Hostname | IP Address | Subnet Mask | DNS Server |
-|------|------|------|------|------|
-| Domain Controller | LAB-DC01 | 192.168.56.10 | 255.255.255.0 | 192.168.56.10 (self) |
-| Workstation 1 | LAB-WIN10-01 | 192.168.56.20 | 255.255.255.0 | 192.168.56.10 |
-| Workstation 2 | LAB-WIN10-02 | 192.168.56.21 | 255.255.255.0 | 192.168.56.10 |
+| System | Hostname | IP Address | Subnet Mask | Default Gateway | DNS Server |
+|------|------|------|------|------|------|
+| Domain Controller | LAB-DC01 | 192.168.56.10 | 255.255.255.0 | — | 192.168.56.10 (self) |
+| Workstation 1 | LAB-WIN10-01 | 192.168.56.20 | 255.255.255.0 | 192.168.56.10 | 192.168.56.10 |
+| Workstation 2 | LAB-WIN10-02 | 192.168.56.21 | 255.255.255.0 | 192.168.56.10 | 192.168.56.10 |
 
-All machines use static IP addresses. Client machines point to the domain controller as their DNS server. Because all machines are on the same subnet within a Host-Only network, no default gateway is required for intra-lab communication.
+All machines use static IP addresses. Client machines point to the domain controller as their DNS server. Workstations use the domain controller (`192.168.56.10`) as their default gateway.
+
+LAB-WIN10-02 network settings are pending verification.
 
 ---
 
@@ -74,6 +78,7 @@ The lab uses VMware Host-Only networking (VMnet1), which creates a fully isolate
 - VMs can communicate with each other and the host machine only
 - There is no internet access or external routing
 - The domain controller serves as the sole DNS server for the `LAB.local` domain
+- The domain controller is configured as the default gateway for workstations
 - Static IP addressing is used throughout to ensure stable domain controller resolution
 
 ---
@@ -104,13 +109,16 @@ The domain contains a simplified organisational structure used to simulate enter
 ```
 LAB.local
 │
-├── Users
-│   ├── Employees
-│   └── IT
-│
+├── Builtin
 ├── Computers
-│
-└── Groups
+├── Domain Controllers
+├── Employees
+├── ForeignSecurityPrincipals
+├── Groups
+├── IT
+├── Managed Service Accounts
+├── Users
+└── Workstations
 ```
 
 Example domain users:
@@ -168,16 +176,17 @@ Each workstation is:
 - joined to the `LAB.local` domain
 - configured with a static IP address
 - pointed to the domain controller (`192.168.56.10`) for DNS
+- using the domain controller (`192.168.56.10`) as the default gateway
 - authenticated using Active Directory user accounts
 - connected to shared network resources
 - managed through Group Policy
 
 Example login configuration:
 
-| Machine | IP Address | User |
-|------|------|------|
-| LAB-WIN10-01 | 192.168.56.20 | j.smith |
-| LAB-WIN10-02 | 192.168.56.21 | a.johnson |
+| Machine | IP Address | User | Status |
+|------|------|------|------|
+| LAB-WIN10-01 | 192.168.56.20 | j.smith | Verified |
+| LAB-WIN10-02 | 192.168.56.21 | a.johnson | Pending |
 
 ---
 
