@@ -20,34 +20,27 @@ The workstations allow simulation of common IT support tasks such as:
 
 Two Windows 10 virtual machines were created to simulate employee workstations.
 
-| Computer Name | Role | Status |
-|---------------|------|--------|
-| LAB-WIN10-01 | Employee workstation | Configured and verified |
-| LAB-WIN10-02 | Employee workstation | Configuration pending |
+| Computer Name | Role |
+|---------------|------|
+| LAB-WIN10-01 | Employee workstation |
+| LAB-WIN10-02 | Employee workstation |
 
-Both machines are connected to the same virtual network as the domain controller.
+Both machines are connected to the same Host-Only virtual network (VMnet1) as the domain controller.
 
 ---
 
 ## Network Configuration
 
-Workstations are configured with a static IP address and use the domain controller as their DNS server and default gateway.
+Workstations are configured with static IP addresses and use the domain controller as their DNS server.
 
-### LAB-WIN10-01 (Verified)
+| Machine | IP Address | Subnet Mask | DNS Server |
+|--------|------------|-------------|------------|
+| LAB-WIN10-01 | 192.168.56.20 | 255.255.255.0 | 192.168.56.10 |
+| LAB-WIN10-02 | 192.168.56.21 | 255.255.255.0 | 192.168.56.10 |
 
-| Setting | Value |
-|--------|------|
-| IP Address | 192.168.56.20 |
-| Subnet Mask | 255.255.255.0 |
-| Default Gateway | 192.168.56.10 |
-| DNS Server | 192.168.56.10 |
-| Network Adapter | Ethernet0 |
+All machines are on the same `192.168.56.0/24` subnet within the Host-Only network. No default gateway is required for intra-lab communication.
 
-The default gateway is set to the domain controller (`192.168.56.10`), which handles routing within the lab network.
-
-### LAB-WIN10-02 (Pending)
-
-Configuration for LAB-WIN10-02 will follow the same settings as LAB-WIN10-01 once verified.
+This allows the workstation to locate and communicate with the domain controller.
 
 Verification command:
 
@@ -59,7 +52,7 @@ ipconfig /all
 
 ## Joining the Domain
 
-Each workstation was joined to the domain `LAB.local`.
+Each workstation was joined to the domain `lab.local`.
 
 Steps:
 
@@ -75,7 +68,7 @@ Domain
 5. Enter the domain name:
 
 ```
-LAB.local
+lab.local
 ```
 
 6. Enter domain administrator credentials when prompted
@@ -105,7 +98,7 @@ LAB\username
 or
 
 ```
-username@LAB.local
+username@lab.local
 ```
 
 ---
@@ -125,12 +118,7 @@ Steps:
 Computers
 ```
 
-3. Locate the workstation object:
-
-```
-LAB-WIN10-01
-```
-
+3. Locate the workstation object (e.g. `LAB-WIN10-01`)
 4. Right-click the computer
 5. Select:
 
@@ -144,7 +132,7 @@ Move
 Workstations
 ```
 
-Repeat for all domain workstations once each machine has been configured and verified.
+Repeat for all domain workstations.
 
 This allows Group Policy and administrative management to be applied to workstation objects.
 
@@ -152,14 +140,14 @@ This allows Group Policy and administrative management to be applied to workstat
 
 ## Verification
 
-The following checks were used to confirm proper domain configuration on LAB-WIN10-01.
+The following checks were used to confirm proper domain configuration.
 
 ### Verify Domain Membership
 
 Open **System Information** and confirm:
 
 ```
-Domain: LAB.local
+Domain: lab.local
 ```
 
 ---
@@ -181,10 +169,10 @@ Expected result: successful response.
 Run:
 
 ```
-nslookup LAB.local
+nslookup lab.local
 ```
 
-Expected result: domain resolves to the domain controller.
+Expected result: domain resolves to the domain controller at `192.168.56.10`.
 
 ---
 
@@ -204,15 +192,15 @@ This confirms that domain policies are being applied to the workstation.
 
 Example screenshots captured during workstation setup include:
 
-- IPv4 properties showing static IP configuration
-- ipconfig /all output confirming network settings
-- Active Directory Users and Computers showing domain membership
-- Workstation objects inside the Workstations OU
+- Windows system properties showing domain membership
+- domain join confirmation
+- workstation objects inside the Workstations OU
+- command prompt output for network verification
 
 Screenshots are stored in the repository directory:
 
 ```
-screenshots/
+screenshots/workstations/
 ```
 
 ---
@@ -227,5 +215,3 @@ By joining workstations to the domain and authenticating with Active Directory a
 - network connectivity problems
 - group policy troubleshooting
 - shared resource access
-
-LAB-WIN10-01 has been fully configured and verified. LAB-WIN10-02 will be configured using the same methodology once LAB-WIN10-01 is confirmed stable.
