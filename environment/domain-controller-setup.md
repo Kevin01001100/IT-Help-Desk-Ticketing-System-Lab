@@ -24,7 +24,7 @@ The server is deployed as a virtual machine using VMware Workstation.
 | Operating System | Windows Server 2019 |
 | Role | Domain Controller |
 | Domain | lab.local |
-| IP Address | 192.168.10.10 |
+| IP Address | 192.168.56.10 |
 | DNS Server | Self-hosted (LAB-DC01) |
 
 ---
@@ -52,10 +52,11 @@ Configuration:
 
 | Setting | Value |
 |-------|-------|
-| IP Address | 192.168.10.10 |
+| IP Address | 192.168.56.10 |
 | Subnet Mask | 255.255.255.0 |
-| Default Gateway | 192.168.10.1 |
-| Preferred DNS Server | 192.168.10.10 |
+| Preferred DNS Server | 192.168.56.10 |
+
+The lab uses VMware Host-Only networking (VMnet1). All machines are on the same subnet, so no default gateway is required for intra-lab communication.
 
 The DNS server is set to the domain controller itself because it hosts the domain DNS service.
 
@@ -220,7 +221,7 @@ Example screenshots captured during setup include:
 Screenshots are located in:
 
 ```
-screenshots/
+screenshots/domain-controller/
 ```
 
 ---
