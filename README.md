@@ -38,7 +38,7 @@ The goal is to demonstrate hands-on experience with common service desk responsi
 - Shared folder structure hosted on the domain controller
 - All machines connected via a VMware Host-Only network (192.168.56.0/24)
 
-For full infrastructure details see [lab-architecture.md](lab-architecture.md).
+For full infrastructure details see [lab-architecture.md](architecture/lab-architecture.md).
 
 ---
 
@@ -72,7 +72,17 @@ For full infrastructure details see [lab-architecture.md](lab-architecture.md).
 ```
 /
 ├── README.md
-├── lab-architecture.md
+├── architecture/
+│   └── lab-architecture.md
+├── environment/
+│   ├── active-directory-structure.md
+│   ├── domain-controller-setup.md
+│   └── workstation-setup.md
+├── screenshots/
+│   ├── environment/
+│   ├── domain-controller/
+│   ├── active-directory/
+│   └── workstations/
 └── tickets/
     ├── ticket-001-account-lockout.md
     ├── ticket-002-shared-drive-access.md
